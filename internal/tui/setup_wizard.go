@@ -8,9 +8,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/claude"
-	"github.com/isaiahrafael/jira-go-mcp/internal/claudedesktop"
-	"github.com/isaiahrafael/jira-go-mcp/internal/opencode"
+	"github.com/jinkp/jira-go-mcp/internal/claude"
+	"github.com/jinkp/jira-go-mcp/internal/claudedesktop"
+	"github.com/jinkp/jira-go-mcp/internal/opencode"
 )
 
 // screenID represents the current screen in the wizard flow.

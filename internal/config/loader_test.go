@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/config"
+	"github.com/jinkp/jira-go-mcp/internal/config"
 )
 
 func TestLoad(t *testing.T) {

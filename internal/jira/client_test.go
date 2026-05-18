@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
 )
 
 // newTestClient builds an HTTPClient pointed at the given test server base URL.

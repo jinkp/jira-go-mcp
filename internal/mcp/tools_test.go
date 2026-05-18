@@ -10,10 +10,10 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
-	internalmcp "github.com/isaiahrafael/jira-go-mcp/internal/mcp"
-	"github.com/isaiahrafael/jira-go-mcp/internal/release"
-	"github.com/isaiahrafael/jira-go-mcp/internal/validation"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
+	internalmcp "github.com/jinkp/jira-go-mcp/internal/mcp"
+	"github.com/jinkp/jira-go-mcp/internal/release"
+	"github.com/jinkp/jira-go-mcp/internal/validation"
 )
 
 // mockReleaseService is a configurable test double for ReleaseService.

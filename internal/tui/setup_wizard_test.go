@@ -9,7 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/x/exp/teatest"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/tui"
+	"github.com/jinkp/jira-go-mcp/internal/tui"
 )
 
 // TestWizard_InitialScreen verifies the wizard starts on scopeScreen

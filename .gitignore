@@ -6,6 +6,7 @@
 *.exe
 *.out
 coverage*
+dist/
 
 # Local AI artifacts
 .atl/

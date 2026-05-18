@@ -3,8 +3,8 @@ package validation_test
 import (
 	"testing"
 
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
-	"github.com/isaiahrafael/jira-go-mcp/internal/validation"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
+	"github.com/jinkp/jira-go-mcp/internal/validation"
 )
 
 func issue(key, status, itype string, labels ...string) jiraclient.Issue {

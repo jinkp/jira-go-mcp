@@ -7,7 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
 
-	internaltui "github.com/isaiahrafael/jira-go-mcp/internal/tui"
+	internaltui "github.com/jinkp/jira-go-mcp/internal/tui"
 )
 
 // NewTUICmd returns the cobra command that launches the interactive setup wizard.

@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/config"
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
-	"github.com/isaiahrafael/jira-go-mcp/internal/notes"
-	"github.com/isaiahrafael/jira-go-mcp/internal/validation"
+	"github.com/jinkp/jira-go-mcp/internal/config"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
+	"github.com/jinkp/jira-go-mcp/internal/notes"
+	"github.com/jinkp/jira-go-mcp/internal/validation"
 )
 
 // CreateInput holds parameters for creating a release.

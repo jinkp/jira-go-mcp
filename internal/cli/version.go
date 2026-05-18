@@ -7,7 +7,7 @@ import (
 )
 
 // Version is the current binary version. Set via -ldflags at build time.
-var Version = "0.1.0"
+var Version = "dev"
 
 // NewVersionCmd returns a cobra command that prints the binary version.
 func NewVersionCmd() *cobra.Command {

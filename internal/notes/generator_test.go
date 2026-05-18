@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
-	"github.com/isaiahrafael/jira-go-mcp/internal/notes"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
+	"github.com/jinkp/jira-go-mcp/internal/notes"
 )
 
 func makeIssue(key, itype, summary string) jiraclient.Issue {

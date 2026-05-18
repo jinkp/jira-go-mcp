@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/claudedesktop"
+	"github.com/jinkp/jira-go-mcp/internal/claudedesktop"
 )
 
 // TestPath_ReturnsPathOnSupportedOS verifies that Path() returns a non-empty

@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/claude"
-	"github.com/isaiahrafael/jira-go-mcp/internal/claudedesktop"
-	"github.com/isaiahrafael/jira-go-mcp/internal/opencode"
+	"github.com/jinkp/jira-go-mcp/internal/claude"
+	"github.com/jinkp/jira-go-mcp/internal/claudedesktop"
+	"github.com/jinkp/jira-go-mcp/internal/opencode"
 )
 
 // installTarget represents one potential install location to check.

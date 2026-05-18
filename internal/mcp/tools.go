@@ -10,7 +10,7 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/release"
+	"github.com/jinkp/jira-go-mcp/internal/release"
 )
 
 // RegisterTools registers all 8 Jira release MCP tools on the given server.

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/opencode"
+	"github.com/jinkp/jira-go-mcp/internal/opencode"
 )
 
 // TestSave_CreatesFileWithEntry verifies that Save creates the config file

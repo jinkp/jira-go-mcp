@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/cli"
+	"github.com/jinkp/jira-go-mcp/internal/cli"
 )
 
 // TestNewSetupCmd_ExistsWithSubcommands verifies the setup command has the

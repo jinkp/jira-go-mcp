@@ -1,0 +1,49 @@
+version: 2
+
+project_name: jira-go-mcp
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: jira-mcp
+    main: .
+    binary: jira-mcp
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X github.com/jinkp/jira-go-mcp/internal/cli.Version={{.Version}}
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    files:
+      - README.md
+      - .env.example
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git
+
+release:
+  github:
+    owner: jinkp
+    name: jira-go-mcp
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"

@@ -7,10 +7,10 @@ import (
 	"github.com/mark3labs/mcp-go/server"
 	"github.com/spf13/cobra"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/config"
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
-	internalmcp "github.com/isaiahrafael/jira-go-mcp/internal/mcp"
-	"github.com/isaiahrafael/jira-go-mcp/internal/release"
+	"github.com/jinkp/jira-go-mcp/internal/config"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
+	internalmcp "github.com/jinkp/jira-go-mcp/internal/mcp"
+	"github.com/jinkp/jira-go-mcp/internal/release"
 )
 
 // NewMCPCmd returns the cobra command for the mcp subcommand.

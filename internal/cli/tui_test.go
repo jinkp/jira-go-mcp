@@ -3,7 +3,7 @@ package cli_test
 import (
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/cli"
+	"github.com/jinkp/jira-go-mcp/internal/cli"
 )
 
 // TestNewTUICmd_ExistsAndHasCorrectUse verifies the TUI command is well-formed.

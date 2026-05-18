@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	jiraclient "github.com/isaiahrafael/jira-go-mcp/internal/jira"
-	"github.com/isaiahrafael/jira-go-mcp/internal/release"
+	jiraclient "github.com/jinkp/jira-go-mcp/internal/jira"
+	"github.com/jinkp/jira-go-mcp/internal/release"
 )
 
 // mockJiraClient is a configurable test double for JiraClient.

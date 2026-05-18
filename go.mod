@@ -1,4 +1,4 @@
-module github.com/isaiahrafael/jira-go-mcp
+module github.com/jinkp/jira-go-mcp
 
 go 1.26.1
 

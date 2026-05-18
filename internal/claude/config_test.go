@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/claude"
+	"github.com/jinkp/jira-go-mcp/internal/claude"
 )
 
 // TestSave_CreatesFileWithEntry verifies that SaveToPath creates the config file

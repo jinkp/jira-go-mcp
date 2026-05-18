@@ -7,9 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/claude"
-	"github.com/isaiahrafael/jira-go-mcp/internal/claudedesktop"
-	"github.com/isaiahrafael/jira-go-mcp/internal/opencode"
+	"github.com/jinkp/jira-go-mcp/internal/claude"
+	"github.com/jinkp/jira-go-mcp/internal/claudedesktop"
+	"github.com/jinkp/jira-go-mcp/internal/opencode"
 )
 
 // resolveBinPath returns the absolute path of the current executable,

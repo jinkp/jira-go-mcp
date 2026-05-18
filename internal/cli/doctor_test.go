@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/isaiahrafael/jira-go-mcp/internal/cli"
+	"github.com/jinkp/jira-go-mcp/internal/cli"
 )
 
 // TestNewDoctorCmd_Exists verifies the doctor command is well-formed.
