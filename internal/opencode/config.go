@@ -28,13 +28,13 @@ func GlobalPath() string {
 }
 
 // LocalPath returns the path to the OpenCode local configuration file
-// in the current working directory.
+// in the current working directory under .opencode/opencode.json.
 func LocalPath() string {
 	cwd, err := os.Getwd()
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(cwd, "opencode.json")
+	return filepath.Join(cwd, ".opencode", "opencode.json")
 }
 
 // Save writes the jira-mcp MCP entry to the OpenCode configuration file

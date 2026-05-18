@@ -118,6 +118,12 @@ DEFAULT_CRITICAL_PRIORITIES=Highest,Critical
 jira-mcp setup opencode --global
 ```
 
+For project-local registration, `jira-mcp` writes to:
+
+```txt
+./.opencode/opencode.json
+```
+
 #### Claude Code
 
 ```bash

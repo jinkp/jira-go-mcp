@@ -89,7 +89,7 @@ func TestSetupOpencode_Global_WritesConfig(t *testing.T) {
 }
 
 // TestSetupOpencode_Local_WritesConfig verifies that `setup opencode --local`
-// writes the jira-mcp entry to a local opencode.json.
+// writes the jira-mcp entry to ./.opencode/opencode.json.
 func TestSetupOpencode_Local_WritesConfig(t *testing.T) {
 	// Clear Jira env vars — setup must run without them
 	for _, k := range []string{"JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"} {
@@ -110,7 +110,7 @@ func TestSetupOpencode_Local_WritesConfig(t *testing.T) {
 		t.Fatalf("setup opencode --local failed: %v", err)
 	}
 
-	cfgPath := filepath.Join(dir, "opencode.json")
+	cfgPath := filepath.Join(dir, ".opencode", "opencode.json")
 	data, err := os.ReadFile(cfgPath)
 	if err != nil {
 		t.Fatalf("expected config file at %s, ReadFile error = %v", cfgPath, err)

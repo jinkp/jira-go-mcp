@@ -162,6 +162,9 @@ func TestLocalPath(t *testing.T) {
 	if filepath.Base(path) != "opencode.json" {
 		t.Errorf("LocalPath() base = %q, want %q", filepath.Base(path), "opencode.json")
 	}
+	if filepath.Base(filepath.Dir(path)) != ".opencode" {
+		t.Errorf("LocalPath() parent dir = %q, want %q", filepath.Base(filepath.Dir(path)), ".opencode")
+	}
 }
 
 // TestSave_GlobalScope uses Save() with GlobalScope and verifies the file is created.
@@ -195,7 +198,7 @@ func TestSave_LocalScope(t *testing.T) {
 		t.Fatalf("Save(LocalScope) error = %v", err)
 	}
 
-	cfgPath := filepath.Join(dir, "opencode.json")
+	cfgPath := filepath.Join(dir, ".opencode", "opencode.json")
 	if !opencode.Check(cfgPath) {
 		t.Error("Check() = false after Save(LocalScope), expected true")
 	}

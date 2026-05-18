@@ -72,7 +72,7 @@ func newSetupOpencodeCmd() *cobra.Command {
 	}
 
 	cmd.Flags().BoolVar(&global, "global", true, "Write to global OpenCode config (~/.config/opencode/opencode.json)")
-	cmd.Flags().BoolVar(&local, "local", false, "Write to local OpenCode config (./opencode.json)")
+	cmd.Flags().BoolVar(&local, "local", false, "Write to local OpenCode config (./.opencode/opencode.json)")
 
 	return cmd
 }
