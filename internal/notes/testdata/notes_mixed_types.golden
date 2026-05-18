@@ -1,0 +1,12 @@
+# Release Notes: v1.0
+
+## Bug
+
+- PROJ-1: Fix login crash
+- PROJ-2: Fix null pointer
+
+## Story
+
+- PROJ-3: User profile page
+- PROJ-4: Dashboard improvements
+- PROJ-5: Settings panel
