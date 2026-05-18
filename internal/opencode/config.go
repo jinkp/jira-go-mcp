@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+
+	"github.com/tailscale/hujson"
 )
 
 // Scope represents the registration scope (global or local).
@@ -56,6 +58,10 @@ func SaveToPath(path, binPath string) error {
 	// Read existing file or start with empty object
 	existing := map[string]json.RawMessage{}
 	if data, err := os.ReadFile(path); err == nil {
+		standardized, err := hujson.Standardize(data)
+		if err == nil {
+			data = standardized
+		}
 		if err := json.Unmarshal(data, &existing); err != nil {
 			// If the file is malformed, start fresh
 			existing = map[string]json.RawMessage{}
@@ -73,8 +79,8 @@ func SaveToPath(path, binPath string) error {
 	// Build the jira-mcp entry
 	entry := map[string]interface{}{
 		"type":    "local",
-		"command": binPath,
-		"args":    []string{"mcp"},
+		"command": []string{binPath, "mcp"},
+		"enabled": true,
 	}
 	entryRaw, err := json.Marshal(entry)
 	if err != nil {
@@ -109,6 +115,9 @@ func Check(path string) bool {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return false
+	}
+	if standardized, err := hujson.Standardize(data); err == nil {
+		data = standardized
 	}
 
 	var outer map[string]json.RawMessage

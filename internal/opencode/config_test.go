@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/jinkp/jira-go-mcp/internal/opencode"
@@ -58,12 +59,20 @@ func TestSave_CreatesFileWithEntry(t *testing.T) {
 		t.Errorf("entry.type = %q, want %q", entryType, "local")
 	}
 
-	var cmd string
-	if err := json.Unmarshal(entry["command"], &cmd); err != nil {
+	var command []string
+	if err := json.Unmarshal(entry["command"], &command); err != nil {
 		t.Fatalf("unmarshal command = %v", err)
 	}
-	if cmd != "/usr/local/bin/jira-mcp" {
-		t.Errorf("entry.command = %q, want %q", cmd, "/usr/local/bin/jira-mcp")
+	if !reflect.DeepEqual(command, []string{"/usr/local/bin/jira-mcp", "mcp"}) {
+		t.Errorf("entry.command = %v, want %v", command, []string{"/usr/local/bin/jira-mcp", "mcp"})
+	}
+
+	var enabled bool
+	if err := json.Unmarshal(entry["enabled"], &enabled); err != nil {
+		t.Fatalf("unmarshal enabled = %v", err)
+	}
+	if !enabled {
+		t.Error("entry.enabled = false, want true")
 	}
 }
 
@@ -74,7 +83,7 @@ func TestSave_PreservesExistingKeys(t *testing.T) {
 	path := filepath.Join(dir, "opencode.json")
 
 	// Write a file with an existing entry
-	initial := `{"mcp":{"other-tool":{"type":"local","command":"/bin/other","args":["mcp"]}},"theme":"dark"}`
+	initial := `{"mcp":{"other-tool":{"type":"local","command":["/bin/other","mcp"],"enabled":true}},"theme":"dark"}`
 	if err := os.WriteFile(path, []byte(initial), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -112,13 +121,64 @@ func TestSave_PreservesExistingKeys(t *testing.T) {
 	}
 }
 
+// TestSave_PreservesExistingKeysFromJSONC verifies SaveToPath can merge into an
+// OpenCode config that contains JSONC comments instead of replacing it.
+func TestSave_PreservesExistingKeysFromJSONC(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "opencode.json")
+
+	initial := `{
+		/* comment */
+		"mcp": {
+			"bbkit": {
+				"type": "local",
+				"command": ["bbk", "mcp"],
+				"enabled": true
+			}
+		},
+		"theme": "dark"
+	}`
+	if err := os.WriteFile(path, []byte(initial), 0o644); err != nil {
+		t.Fatalf("WriteFile() error = %v", err)
+	}
+
+	if err := opencode.SaveToPath(path, "/usr/local/bin/jira-mcp"); err != nil {
+		t.Fatalf("SaveToPath() error = %v", err)
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile() error = %v", err)
+	}
+
+	var result map[string]json.RawMessage
+	if err := json.Unmarshal(data, &result); err != nil {
+		t.Fatalf("json.Unmarshal() error = %v", err)
+	}
+
+	if _, ok := result["theme"]; !ok {
+		t.Error("expected 'theme' key to be preserved, not found")
+	}
+
+	var mcpMap map[string]json.RawMessage
+	if err := json.Unmarshal(result["mcp"], &mcpMap); err != nil {
+		t.Fatalf("unmarshal mcp = %v", err)
+	}
+	if _, ok := mcpMap["bbkit"]; !ok {
+		t.Error("expected existing 'bbkit' entry to be preserved")
+	}
+	if _, ok := mcpMap["jira-mcp"]; !ok {
+		t.Error("expected 'jira-mcp' key to be added to mcp, not found")
+	}
+}
+
 // TestCheck_ReturnsTrueWhenEntryPresent verifies Check() returns true when
 // the jira-mcp key exists in the mcp section of the config file.
 func TestCheck_ReturnsTrueWhenEntryPresent(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "opencode.json")
 
-	content := `{"mcp":{"jira-mcp":{"type":"local","command":"/bin/jira-mcp","args":["mcp"]}}}`
+	content := `{"mcp":{"jira-mcp":{"type":"local","command":["/bin/jira-mcp","mcp"],"enabled":true}}}`
 	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
@@ -128,13 +188,38 @@ func TestCheck_ReturnsTrueWhenEntryPresent(t *testing.T) {
 	}
 }
 
+// TestCheck_ReturnsTrueWhenEntryPresentInJSONC verifies Check() handles
+// OpenCode JSONC config files with comments.
+func TestCheck_ReturnsTrueWhenEntryPresentInJSONC(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "opencode.json")
+
+	content := `{
+		/* comment */
+		"mcp": {
+			"jira-mcp": {
+				"type": "local",
+				"command": ["/bin/jira-mcp", "mcp"],
+				"enabled": true
+			}
+		}
+	}`
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("WriteFile() error = %v", err)
+	}
+
+	if !opencode.Check(path) {
+		t.Error("Check() = false, want true when jira-mcp entry is present in JSONC config")
+	}
+}
+
 // TestCheck_ReturnsFalseWhenEntryAbsent verifies Check() returns false when
 // the jira-mcp key is not in the config file.
 func TestCheck_ReturnsFalseWhenEntryAbsent(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "opencode.json")
 
-	content := `{"mcp":{"other-tool":{"type":"local","command":"/bin/other","args":["mcp"]}}}`
+	content := `{"mcp":{"other-tool":{"type":"local","command":["/bin/other","mcp"],"enabled":true}}}`
 	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
 		t.Fatalf("WriteFile() error = %v", err)
 	}
