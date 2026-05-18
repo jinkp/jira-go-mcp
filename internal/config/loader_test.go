@@ -1,6 +1,8 @@
 package config_test
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/jinkp/jira-go-mcp/internal/config"
@@ -93,14 +95,39 @@ func TestLoad(t *testing.T) {
 				CriticalLabels: []string{"critical", "blocker"},
 			},
 		},
+		{
+			name:    "loads required vars from external file when env is absent",
+			env:     map[string]string{},
+			wantErr: false,
+			wantCfg: &config.Config{
+				BaseURL:        "https://file.atlassian.net",
+				Email:          "file@acme.com",
+				APIToken:       "filetoken",
+				DefaultProject: "FILE",
+				DoneStatuses:   []string{"Done", "Closed"},
+				CriticalLabels: []string{"critical", "blocker"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// isolate env per test
-			setEnv(t, tt.env)
+			t.Run(tt.name, func(t *testing.T) {
+				// isolate env per test
+				setEnv(t, tt.env)
+				if tt.name == "loads required vars from external file when env is absent" {
+					home := t.TempDir()
+					t.Setenv("HOME", home)
+					t.Setenv("USERPROFILE", home)
+					if err := os.MkdirAll(filepath.Join(home, ".mcp"), 0o755); err != nil {
+						t.Fatalf("MkdirAll() error = %v", err)
+					}
+					content := "JIRA_BASE_URL=https://file.atlassian.net\nJIRA_EMAIL=file@acme.com\nJIRA_API_TOKEN=filetoken\nJIRA_DEFAULT_PROJECT=FILE\nJIRA_DONE_STATUSES=Done,Closed\nJIRA_CRITICAL_LABELS=critical,blocker\n"
+					if err := os.WriteFile(filepath.Join(home, ".mcp", "jira-go-mcp.env"), []byte(content), 0o600); err != nil {
+						t.Fatalf("WriteFile() error = %v", err)
+					}
+				}
 
-			got, err := config.Load()
+				got, err := config.Load()
 
 			if tt.wantErr {
 				if err == nil {

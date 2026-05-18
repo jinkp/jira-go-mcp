@@ -2,6 +2,7 @@ package cli_test
 
 import (
 	"encoding/json"
+	"bytes"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,9 +27,55 @@ func TestNewSetupCmd_ExistsWithSubcommands(t *testing.T) {
 		subNames[sub.Use] = true
 	}
 
-	for _, want := range []string{"opencode", "claude", "claude-desktop"} {
+	for _, want := range []string{"jira", "opencode", "claude", "claude-desktop"} {
 		if !subNames[want] {
 			t.Errorf("expected subcommand %q not found; got %v", want, subNames)
+		}
+	}
+}
+
+func TestSetupJira_WritesExternalConfigFile(t *testing.T) {
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("USERPROFILE", home)
+	for _, k := range []string{"JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN", "JIRA_DEFAULT_PROJECT", "JIRA_DONE_STATUSES", "JIRA_CRITICAL_LABELS"} {
+		t.Setenv(k, "")
+	}
+
+	root := cli.NewSetupCmd()
+	input := strings.Join([]string{
+		"https://acme.atlassian.net",
+		"dev@acme.com",
+		"token123",
+		"PROJ",
+		"Done,Closed",
+		"critical,blocker",
+	}, "\n") + "\n"
+	root.SetIn(strings.NewReader(input))
+	var out bytes.Buffer
+	root.SetOut(&out)
+	root.SetArgs([]string{"jira"})
+
+	if err := root.Execute(); err != nil {
+		t.Fatalf("setup jira failed: %v", err)
+	}
+
+	path := filepath.Join(home, ".mcp", "jira-go-mcp.env")
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile() error = %v", err)
+	}
+	text := string(data)
+	for _, want := range []string{
+		"JIRA_BASE_URL=https://acme.atlassian.net",
+		"JIRA_EMAIL=dev@acme.com",
+		"JIRA_API_TOKEN=token123",
+		"JIRA_DEFAULT_PROJECT=PROJ",
+		"JIRA_DONE_STATUSES=Done,Closed",
+		"JIRA_CRITICAL_LABELS=critical,blocker",
+	} {
+		if !strings.Contains(text, want) {
+			t.Errorf("saved config missing %q", want)
 		}
 	}
 }

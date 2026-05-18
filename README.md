@@ -88,7 +88,19 @@ go build -o jira-mcp .
 
 ### 1. Configure Jira credentials
 
-Copy the example file and set your values:
+Recommended: use the built-in setup flow so credentials are stored outside your repo:
+
+```bash
+jira-mcp setup jira
+```
+
+This writes an external config file at:
+
+```txt
+~/.mcp/jira-go-mcp.env
+```
+
+You can still use environment variables directly if you prefer. Copy the example file and set your values:
 
 ```bash
 cp .env.example .env

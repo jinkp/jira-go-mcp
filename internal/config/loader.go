@@ -9,24 +9,36 @@ import (
 // Load reads configuration from environment variables and returns a Config.
 // It fails fast if any required variable is missing.
 func Load() (*Config, error) {
+	fileValues, err := LoadFile(FilePath())
+	if err != nil {
+		return nil, err
+	}
+
 	required := []string{"JIRA_BASE_URL", "JIRA_EMAIL", "JIRA_API_TOKEN"}
 	for _, key := range required {
-		if os.Getenv(key) == "" {
+		if envOrFile(key, fileValues) == "" {
 			return nil, fmt.Errorf("required environment variable %s is not set", key)
 		}
 	}
 
-	doneStatuses := splitCSV(os.Getenv("JIRA_DONE_STATUSES"), "Done")
-	criticalLabels := splitCSV(os.Getenv("JIRA_CRITICAL_LABELS"), "critical")
+	doneStatuses := splitCSV(envOrFile("JIRA_DONE_STATUSES", fileValues), "Done")
+	criticalLabels := splitCSV(envOrFile("JIRA_CRITICAL_LABELS", fileValues), "critical")
 
 	return &Config{
-		BaseURL:        os.Getenv("JIRA_BASE_URL"),
-		Email:          os.Getenv("JIRA_EMAIL"),
-		APIToken:       os.Getenv("JIRA_API_TOKEN"),
-		DefaultProject: os.Getenv("JIRA_DEFAULT_PROJECT"),
+		BaseURL:        envOrFile("JIRA_BASE_URL", fileValues),
+		Email:          envOrFile("JIRA_EMAIL", fileValues),
+		APIToken:       envOrFile("JIRA_API_TOKEN", fileValues),
+		DefaultProject: envOrFile("JIRA_DEFAULT_PROJECT", fileValues),
 		DoneStatuses:   doneStatuses,
 		CriticalLabels: criticalLabels,
 	}, nil
+}
+
+func envOrFile(key string, fileValues map[string]string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fileValues[key]
 }
 
 // splitCSV splits a comma-separated value string; returns defaultVal slice if empty.
