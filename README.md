@@ -40,6 +40,12 @@ After extracting, put `jira-mcp` (or `jira-mcp.exe`) somewhere in your `PATH`.
 irm https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.ps1 | iex
 ```
 
+Default install directory:
+
+```txt
+%USERPROFILE%\.mcp\bin
+```
+
 Install a specific version instead:
 
 ```powershell
@@ -52,6 +58,12 @@ Install a specific version instead:
 curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.sh | sh
 ```
 
+Default install directory:
+
+```txt
+~/.mcp/bin
+```
+
 Install a specific version instead:
 
 ```bash
@@ -61,7 +73,7 @@ curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/inst
 You can also override the install directory:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.sh | INSTALL_DIR="$HOME/.local/bin" sh
+curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.sh | INSTALL_DIR="$HOME/.mcp/bin" sh
 ```
 
 ### Option 4: build from source

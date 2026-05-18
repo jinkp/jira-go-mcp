@@ -4,7 +4,7 @@ set -eu
 OWNER="jinkp"
 REPO="jira-go-mcp"
 BIN_NAME="jira-mcp"
-INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
+INSTALL_DIR="${INSTALL_DIR:-$HOME/.mcp/bin}"
 VERSION="${VERSION:-latest}"
 
 need_cmd() {

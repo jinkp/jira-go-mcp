@@ -1,6 +1,6 @@
 param(
     [string]$Version = "latest",
-    [string]$InstallDir = "$HOME\bin"
+    [string]$InstallDir = "$HOME\.mcp\bin"
 )
 
 $ErrorActionPreference = "Stop"
