@@ -37,51 +37,31 @@ After extracting, put `jira-mcp` (or `jira-mcp.exe`) somewhere in your `PATH`.
 ### Option 2: install with `irm` (PowerShell / Windows)
 
 ```powershell
-$version = "v0.1.1"
-$asset = "jira-go-mcp_0.1.1_windows_amd64.zip"
-$url = "https://github.com/jinkp/jira-go-mcp/releases/download/$version/$asset"
-$tmp = Join-Path $env:TEMP $asset
-$dest = Join-Path $env:USERPROFILE "bin\jira-go-mcp"
-New-Item -ItemType Directory -Force -Path $dest | Out-Null
-irm $url -OutFile $tmp
-Expand-Archive -LiteralPath $tmp -DestinationPath $dest -Force
+irm https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.ps1 | iex
 ```
 
-Then add the destination folder to your `PATH`, for example:
+Install a specific version instead:
 
 ```powershell
-$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if ($userPath -notlike "*$dest*") {
-  [Environment]::SetEnvironmentVariable("Path", "$userPath;$dest", "User")
-}
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.ps1))) -Version v0.1.2
 ```
 
 ### Option 3: install with `curl` (Linux / macOS)
 
-#### Linux amd64
-
 ```bash
-VERSION="v0.1.1"
-ASSET="jira-go-mcp_0.1.1_linux_amd64.tar.gz"
-curl -Lo /tmp/$ASSET https://github.com/jinkp/jira-go-mcp/releases/download/$VERSION/$ASSET
-mkdir -p "$HOME/.local/bin/jira-go-mcp"
-tar -xzf /tmp/$ASSET -C "$HOME/.local/bin/jira-go-mcp"
+curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.sh | sh
 ```
 
-#### macOS arm64
+Install a specific version instead:
 
 ```bash
-VERSION="v0.1.1"
-ASSET="jira-go-mcp_0.1.1_darwin_arm64.tar.gz"
-curl -Lo /tmp/$ASSET https://github.com/jinkp/jira-go-mcp/releases/download/$VERSION/$ASSET
-mkdir -p "$HOME/.local/bin/jira-go-mcp"
-tar -xzf /tmp/$ASSET -C "$HOME/.local/bin/jira-go-mcp"
+curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.sh | VERSION=v0.1.2 sh
 ```
 
-Then add it to your shell `PATH`:
+You can also override the install directory:
 
 ```bash
-export PATH="$HOME/.local/bin/jira-go-mcp:$PATH"
+curl -fsSL https://raw.githubusercontent.com/jinkp/jira-go-mcp/main/scripts/install.sh | INSTALL_DIR="$HOME/.local/bin" sh
 ```
 
 ### Option 4: build from source
@@ -210,6 +190,7 @@ This repository includes:
 
 - **GoReleaser** configuration in `.goreleaser.yaml`
 - **GitHub Actions** workflow in `.github/workflows/release.yml`
+- install scripts in `scripts/install.ps1` and `scripts/install.sh`
 
 Pushing a version tag like `v0.1.1` publishes cross-platform release archives automatically.
 

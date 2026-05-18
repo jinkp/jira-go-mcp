@@ -33,6 +33,8 @@ archives:
     files:
       - README.md
       - .env.example
+      - scripts/install.sh
+      - scripts/install.ps1
 
 checksum:
   name_template: checksums.txt
