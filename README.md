@@ -34,7 +34,57 @@ Expected artifact names:
 
 After extracting, put `jira-mcp` (or `jira-mcp.exe`) somewhere in your `PATH`.
 
-### Option 2: build from source
+### Option 2: install with `irm` (PowerShell / Windows)
+
+```powershell
+$version = "v0.1.1"
+$asset = "jira-go-mcp_0.1.1_windows_amd64.zip"
+$url = "https://github.com/jinkp/jira-go-mcp/releases/download/$version/$asset"
+$tmp = Join-Path $env:TEMP $asset
+$dest = Join-Path $env:USERPROFILE "bin\jira-go-mcp"
+New-Item -ItemType Directory -Force -Path $dest | Out-Null
+irm $url -OutFile $tmp
+Expand-Archive -LiteralPath $tmp -DestinationPath $dest -Force
+```
+
+Then add the destination folder to your `PATH`, for example:
+
+```powershell
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+if ($userPath -notlike "*$dest*") {
+  [Environment]::SetEnvironmentVariable("Path", "$userPath;$dest", "User")
+}
+```
+
+### Option 3: install with `curl` (Linux / macOS)
+
+#### Linux amd64
+
+```bash
+VERSION="v0.1.1"
+ASSET="jira-go-mcp_0.1.1_linux_amd64.tar.gz"
+curl -Lo /tmp/$ASSET https://github.com/jinkp/jira-go-mcp/releases/download/$VERSION/$ASSET
+mkdir -p "$HOME/.local/bin/jira-go-mcp"
+tar -xzf /tmp/$ASSET -C "$HOME/.local/bin/jira-go-mcp"
+```
+
+#### macOS arm64
+
+```bash
+VERSION="v0.1.1"
+ASSET="jira-go-mcp_0.1.1_darwin_arm64.tar.gz"
+curl -Lo /tmp/$ASSET https://github.com/jinkp/jira-go-mcp/releases/download/$VERSION/$ASSET
+mkdir -p "$HOME/.local/bin/jira-go-mcp"
+tar -xzf /tmp/$ASSET -C "$HOME/.local/bin/jira-go-mcp"
+```
+
+Then add it to your shell `PATH`:
+
+```bash
+export PATH="$HOME/.local/bin/jira-go-mcp:$PATH"
+```
+
+### Option 4: build from source
 
 ```bash
 git clone https://github.com/jinkp/jira-go-mcp.git
