@@ -3,6 +3,8 @@ package cli_test
 import (
 	"bytes"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -108,5 +110,60 @@ func TestDoctor_WithOpenCodeGlobal_ShowsPass(t *testing.T) {
 	passCount := strings.Count(output, "✓")
 	if passCount < 1 {
 		t.Errorf("expected at least 1 ✓ symbol (OpenCode global installed), got %d\nOutput:\n%s", passCount, output)
+	}
+}
+
+func TestDoctorJira_ValidConnection_ShowsAuthenticated(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/rest/api/3/myself" {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"displayName":"Joel Keb","emailAddress":"joel@example.com"}`))
+	}))
+	defer srv.Close()
+
+	t.Setenv("JIRA_BASE_URL", srv.URL)
+	t.Setenv("JIRA_EMAIL", "joel@example.com")
+	t.Setenv("JIRA_API_TOKEN", "token123")
+
+	var out bytes.Buffer
+	cmd := cli.NewDoctorCmd()
+	cmd.SetOut(&out)
+	cmd.SetArgs([]string{"jira"})
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("doctor jira failed: %v", err)
+	}
+
+	output := out.String()
+	if !strings.Contains(output, "authenticated as Joel Keb") {
+		t.Fatalf("expected authenticated output, got:\n%s", output)
+	}
+}
+
+func TestDoctorJira_InvalidConnection_ShowsFailure(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	}))
+	defer srv.Close()
+
+	t.Setenv("JIRA_BASE_URL", srv.URL)
+	t.Setenv("JIRA_EMAIL", "joel@example.com")
+	t.Setenv("JIRA_API_TOKEN", "bad-token")
+
+	var out bytes.Buffer
+	cmd := cli.NewDoctorCmd()
+	cmd.SetOut(&out)
+	cmd.SetArgs([]string{"jira"})
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("doctor jira failed: %v", err)
+	}
+
+	output := out.String()
+	if !strings.Contains(output, "Connection : ✗") {
+		t.Fatalf("expected failure output, got:\n%s", output)
 	}
 }

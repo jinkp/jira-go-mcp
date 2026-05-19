@@ -196,3 +196,62 @@ func TestHTTPClient_SearchIssues(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateConnection(t *testing.T) {
+	tests := []struct {
+		name        string
+		serverResp  func(w http.ResponseWriter, r *http.Request)
+		wantErr     bool
+		errContains string
+		wantName    string
+	}{
+		{
+			name: "authenticates successfully",
+			serverResp: func(w http.ResponseWriter, r *http.Request) {
+				if r.URL.Path != "/rest/api/3/myself" {
+					http.NotFound(w, r)
+					return
+				}
+				w.Header().Set("Content-Type", "application/json")
+				_ = json.NewEncoder(w).Encode(map[string]any{
+					"displayName":  "Joel Keb",
+					"accountId":    "abc123",
+					"emailAddress": "joel@example.com",
+				})
+			},
+			wantName: "Joel Keb",
+		},
+		{
+			name: "returns 401 error",
+			serverResp: func(w http.ResponseWriter, r *http.Request) {
+				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			},
+			wantErr:     true,
+			errContains: "401",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			srv := httptest.NewServer(http.HandlerFunc(tt.serverResp))
+			defer srv.Close()
+
+			got, err := jiraclient.ValidateConnection(context.Background(), srv.URL, "test@test.com", "token")
+			if tt.wantErr {
+				if err == nil {
+					t.Fatal("expected error, got nil")
+				}
+				if tt.errContains != "" && !strings.Contains(err.Error(), tt.errContains) {
+					t.Errorf("error = %q, want to contain %q", err.Error(), tt.errContains)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got.DisplayName != tt.wantName {
+				t.Errorf("DisplayName = %q, want %q", got.DisplayName, tt.wantName)
+			}
+		})
+	}
+}
